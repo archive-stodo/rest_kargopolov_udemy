@@ -1,6 +1,6 @@
 package com.appsdeveloperblog.app.ws.model.response;
 
-public class UserRest {
+public class UserRestResponse {
     private String userId;
     private String firstName;
     private String lastName;

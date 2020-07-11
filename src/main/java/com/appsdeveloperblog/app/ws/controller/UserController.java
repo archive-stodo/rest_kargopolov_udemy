@@ -1,7 +1,7 @@
 package com.appsdeveloperblog.app.ws.controller;
 
 import com.appsdeveloperblog.app.ws.model.request.UserDetailsRequestModel;
-import com.appsdeveloperblog.app.ws.model.response.UserRest;
+import com.appsdeveloperblog.app.ws.model.response.UserRestResponse;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
@@ -21,16 +21,16 @@ public class UserController {
     }
 
     @PostMapping
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
-        UserRest returnValue = new UserRest();
+    public UserRestResponse createUser(@RequestBody UserDetailsRequestModel userDetails) {
+        UserRestResponse userRestResponse = new UserRestResponse();
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
 
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser, returnValue);
+        BeanUtils.copyProperties(createdUser, userRestResponse);
 
-        return returnValue;
+        return userRestResponse;
     }
 
     @PutMapping
