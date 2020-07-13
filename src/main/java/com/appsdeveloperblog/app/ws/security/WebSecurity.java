@@ -29,7 +29,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new AuthenticationFilter(authenticationManager()));
+                .addFilter(new AuthenticationFilter(authenticationManager(), userDetailsService));
     }
 
     @Override
