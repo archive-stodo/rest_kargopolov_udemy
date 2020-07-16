@@ -1,6 +1,8 @@
 package com.appsdeveloperblog.app.ws.controller;
 
+import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.model.request.UserDetailsRequestModel;
+import com.appsdeveloperblog.app.ws.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.model.response.UserRestResponse;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
@@ -35,7 +37,11 @@ public class UserController {
     produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE})
-    public UserRestResponse createUser(@RequestBody UserDetailsRequestModel userDetails) {
+    public UserRestResponse createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
+        if(userDetails.getFirstName().isEmpty()){
+            throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+        }
+
         UserRestResponse userRestResponse = new UserRestResponse();
 
         UserDto userDto = new UserDto();
