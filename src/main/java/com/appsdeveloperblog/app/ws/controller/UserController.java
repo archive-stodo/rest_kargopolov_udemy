@@ -29,7 +29,12 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping
+    @PostMapping(consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE},
+    produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE})
     public UserRestResponse createUser(@RequestBody UserDetailsRequestModel userDetails) {
         UserRestResponse userRestResponse = new UserRestResponse();
 
