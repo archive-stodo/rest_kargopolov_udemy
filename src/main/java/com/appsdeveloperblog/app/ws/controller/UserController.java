@@ -6,16 +6,17 @@ import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users") //http://localhost:8080/users
 public class UserController {
 
-    @Autowired
-    UserService userService;
-
-    @GetMapping(path="/{id}")
+    @GetMapping(path="/{id}", produces = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE
+    })
     public UserRestResponse getUser(@PathVariable String id) {
         UserRestResponse userRestResponse = new UserRestResponse();
         UserDto userDto = userService.getUserByUserId(id);
@@ -24,6 +25,9 @@ public class UserController {
 
         return userRestResponse;
     }
+
+    @Autowired
+    UserService userService;
 
     @PostMapping
     public UserRestResponse createUser(@RequestBody UserDetailsRequestModel userDetails) {
