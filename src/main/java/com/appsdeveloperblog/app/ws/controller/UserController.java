@@ -10,8 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.appsdeveloperblog.app.ws.model.response.RequestOperationName.DELETE;
 import static com.appsdeveloperblog.app.ws.model.response.RequestOperationStatus.SUCCESS;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.beans.BeanUtils.copyProperties;
 
 @RestController
 @RequestMapping("users") //http://localhost:8080/users
@@ -28,7 +33,7 @@ public class UserController {
         UserRestResponse userRestResponse = new UserRestResponse();
         UserDto userDto = userService.getUserByUserId(id);
 
-        BeanUtils.copyProperties(userDto, userRestResponse);
+        copyProperties(userDto, userRestResponse);
 
         return userRestResponse;
     }
@@ -47,10 +52,10 @@ public class UserController {
         UserRestResponse userRestResponse = new UserRestResponse();
 
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        copyProperties(userDetails, userDto);
 
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser, userRestResponse);
+        copyProperties(createdUser, userRestResponse);
 
         return userRestResponse;
     }
@@ -63,10 +68,10 @@ public class UserController {
         UserRestResponse userRestResponse = new UserRestResponse();
 
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        copyProperties(userDetails, userDto);
 
         UserDto createdUser = userService.updateUser(id, userDto);
-        BeanUtils.copyProperties(createdUser, userRestResponse);
+        copyProperties(createdUser, userRestResponse);
 
         return userRestResponse;
     }
@@ -82,4 +87,20 @@ public class UserController {
 
         return returnValue;
     }
+
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public List<UserRestResponse> getUsers(@RequestParam(value="page", defaultValue = "0") int page,
+                                           @RequestParam(value="limit", defaultValue = "25") int limit)
+    {
+        List<UserDto> users = userService.getUsers(page, limit);
+
+        return users.stream()
+                .map(user -> {
+                    UserRestResponse userRestResponse = new UserRestResponse();
+                    copyProperties(user, userRestResponse);
+                    return userRestResponse;
+                }).collect(toList());
+    }
+
+
 }
