@@ -1,7 +1,9 @@
 package com.appsdeveloperblog.app.ws.service.impl;
 
+import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
+import com.appsdeveloperblog.app.ws.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.Utils;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
@@ -76,6 +78,24 @@ public class UserServiceImpl implements UserService {
         if(userEntity == null) throw new UsernameNotFoundException(id);
 
         UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+        userRepository.save(userEntity);
+
         BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;

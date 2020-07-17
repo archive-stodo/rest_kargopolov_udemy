@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("users") //http://localhost:8080/users
 public class UserController {
 
+    @Autowired
+    UserService userService;
+
     @GetMapping(path="/{id}", produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE
@@ -27,9 +30,6 @@ public class UserController {
 
         return userRestResponse;
     }
-
-    @Autowired
-    UserService userService;
 
     @PostMapping(consumes = {
             MediaType.APPLICATION_JSON_VALUE,
@@ -53,9 +53,20 @@ public class UserController {
         return userRestResponse;
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "update user was called";
+    @PutMapping(path = "/{id}",
+        consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public UserRestResponse updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
+        UserRestResponse userRestResponse = new UserRestResponse();
+
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(userDetails, userDto);
+
+        UserDto createdUser = userService.updateUser(id, userDto);
+        BeanUtils.copyProperties(createdUser, userRestResponse);
+
+        return userRestResponse;
     }
 
     @DeleteMapping
