@@ -5,6 +5,7 @@ import com.appsdeveloperblog.app.ws.model.request.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.model.response.*;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -51,11 +52,11 @@ public class UserController {
 
         UserRestResponse userRestResponse = new UserRestResponse();
 
-        UserDto userDto = new UserDto();
-        copyProperties(userDetails, userDto);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdUser = userService.createUser(userDto);
-        copyProperties(createdUser, userRestResponse);
+        userRestResponse = modelMapper.map(createdUser, UserRestResponse.class);
 
         return userRestResponse;
     }

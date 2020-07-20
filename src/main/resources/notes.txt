@@ -1,0 +1,45 @@
+connect with ec2
+ssh -i PhotoAppEC2Server.pem ec2-user@ec2-3-122-193-83.eu-central-1.compute.amazonaws.com
+
+sudo yum install java-1.8.0
+sudo /usr/sbin/alternatives --config java
+sudo yum install tomcat8
+sudo yum install tomcat8-admin-webapps
+
+
+sudo service tomcat8 start
+sudo service tomcat8 stop
+sudo service tomcat8 restart
+
+// access will be denied because no user created
+http://ec2-3-122-193-83.eu-central-1.compute.amazonaws.com:8080/manager/html
+
+---- Configure Tomcat 8 Users ---
+whereis tomcat8
+   /usr/share/tomcat8/conf
+
+<role rolename="manager-gui"/>
+<user username="tomcat" password="s3cret" roles="manager-gui"/>
+
+        stackoverflow
+        I have to modify the following files
+
+        $CATALINA_BASE/conf/Catalina/localhost/manager.xml and add following line
+
+          <Context privileged="true" antiResourceLocking="false"
+             docBase="${catalina.home}/webapps/manager">
+                <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
+          </Context>
+
+---- install mysql server ---
+sudo yum install mysql-server
+sudo service mysqld start
+
+sudo /usr/bin/mysql_secure_installation
+
+mysql -u root -p
+
+create database photo_app
+create user 'stodo'@'localhost' identified by 'some password here';
+grant all privileges on photo_app.* to 'stodo'@'localhost';
+
